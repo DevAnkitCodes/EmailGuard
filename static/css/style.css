@@ -1,30 +1,67 @@
-/* Custom Glow & Animations */
+:root {
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+    --primary: #22d3ee; /* Neon Blue */
+    --danger: #f43f5e;  /* Red */
+    --success: #10b981; /* Green */
+    --text: #f8fafc;
+}
+
 body {
+    background-color: var(--bg-dark);
+    color: var(--text);
     font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at top right, #0f172a, #020617);
+    margin: 0;
 }
 
-.animate-glow {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: #00000050;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #334155;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-track {
-    background: #020617;
-}
-::-webkit-scrollbar-thumb {
-    background: #1e293b;
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #3b82f6;
+.logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+.ai-tag { background: var(--primary); color: black; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+
+.dashboard-container { padding: 2rem; max-width: 1200px; margin: auto; }
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
-.card-hover:hover {
-    transform: translateY(-2px);
-    border-color: #3b82f6;
-    transition: all 0.3s ease;
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #334155;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
 }
+
+.chart-card { text-align: center; }
+.chart-container { position: relative; height: 200px; display: flex; justify-content: center; }
+
+.risk-value { font-size: 2rem; font-weight: bold; margin-top: -20px; color: var(--primary); }
+
+.email-items { margin-top: 1rem; }
+.email-entry {
+    background: #0f172a;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid var(--primary);
+}
+
+.badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+.bg-safe { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+.bg-danger { background: rgba(244, 63, 94, 0.2); color: var(--danger); }
+
+.btn-primary { background: var(--primary); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
