@@ -1,11 +1,11 @@
 :root {
-    bg: #0a0c10;
-    card: #161b22;
-    border: #30363d;
-    primary: #58a6ff;
-    danger: #f85149;
-    success: #3fb950;
-    text: #c9d1d9;
+    --bg: #0a0c10;
+    --card: #161b22;
+    --border: #30363d;
+    --primary: #58a6ff;
+    --danger: #f85149;
+    --success: #3fb950;
+    --text: #c9d1d9;
 }
 
 body {
