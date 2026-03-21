@@ -4,52 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EmailGuard AI | Security Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">EMAIL<span class="highlight">GUARD</span> AI</div>
-        <div class="nav-right">
-            <button id="refresh-btn" class="btn-primary">REFRESH ANALYSIS</button>
+    <nav class="top-nav">
+        <div class="logo">
+            <span class="shield-icon">🛡️</span> CyberGuard <span class="ai-pill">AI</span>
+        </div>
+        <div class="nav-controls">
+            <button id="refresh-btn" class="btn-primary">Refresh Analysis</button>
             <a href="/logout" class="btn-logout">Logout</a>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="metrics-grid">
-            <div class="card">
+    <main class="dashboard-content">
+        <div class="grid-layout">
+            <div class="glass-card chart-card">
                 <div class="card-header">
-                    <h3>Overall Inbox Risk</h3>
-                    <span class="info-icon">i</span>
+                    <h3>Overall Threat Risk</h3>
                 </div>
-                <div class="chart-box">
+                <div class="canvas-wrapper">
                     <canvas id="riskMeter"></canvas>
-                    <div id="risk-value" class="gauge-label">0%</div>
+                    <div id="risk-display" class="risk-center-text">--</div>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="glass-card chart-card">
                 <div class="card-header">
-                    <h3>Threat Composition</h3>
+                    <h3>Inbox Composition</h3>
                 </div>
-                <div class="chart-box">
+                <div class="canvas-wrapper">
                     <canvas id="compositionChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="card list-container">
-            <div class="card-header">
+        <div class="glass-card list-section">
+            <div class="card-header list-header">
                 <h3>Threat Analysis Log</h3>
-                <div id="status-pill" class="pill">System Ready</div>
+                <span id="scan-count" class="scan-badge">0 Scanned</span>
             </div>
-            <div id="email-list" class="email-rows">
-                <p class="empty-state">No data analyzed yet. Click "Refresh Analysis" to start.</p>
+            <div id="email-list" class="email-container">
+                <p class="placeholder-text">Click "Refresh Analysis" to begin AI scan...</p>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 </body>
