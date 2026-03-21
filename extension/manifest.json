@@ -5,17 +5,17 @@
   "description": "AI-Powered Phishing & Spam detection for Gmail.",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "cookies"
   ],
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": "../static/icon.png"
+    "default_popup": "popup.html"
   },
   "host_permissions": [
-    "https://your-app-name.onrender.com/*"
+    "https://emailguard-ai.onrender.com/*"
   ],
   "icons": {
-    "48": "../static/icon.png",
-    "128": "../static/icon.png"
+    "48": "static/icon.png",
+    "128": "static/icon.png"
   }
 }
