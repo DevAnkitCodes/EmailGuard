@@ -1,25 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CyberGuard Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard | AI Dashboard</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 text-white p-8">
-    <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-10">
-            <h1 class="text-3xl font-bold text-blue-500">🛡️ CyberGuard AI</h1>
-            <button id="fetchData" class="bg-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-blue-700">REFRESH ANALYSIS</button>
-        </header>
+<body>
+    <nav class="navbar">
+        <div class="logo">CyberGuard <span class="ai-tag">AI</span></div>
+        <div class="nav-actions">
+            <button id="refresh-btn" class="btn-primary">Refresh Analysis</button>
+        </div>
+    </nav>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
-                <canvas id="riskChart"></canvas>
-            </div>
-            <div id="report-list" class="space-y-4">
+    <div class="dashboard-container">
+        <div class="metrics-grid">
+            <div class="card chart-card">
+                <h3>Global Risk Level</h3>
+                <div class="chart-container">
+                    <canvas id="riskMeter"></canvas>
                 </div>
+                <div id="risk-label" class="risk-value">--</div>
+            </div>
+
+            <div class="card chart-card">
+                <h3>Inbox Composition</h3>
+                <div class="chart-container">
+                    <canvas id="compositionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card list-card">
+            <h3>Threat Analysis Log</h3>
+            <div id="email-list" class="email-items">
+                <p class="loading-text">Click Refresh to start scanning...</p>
+            </div>
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 </body>
 </html>
