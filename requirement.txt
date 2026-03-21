@@ -1,0 +1,10 @@
+flask
+flask-cors
+authlib
+google-auth
+gunicorn
+scikit-learn
+python-dotenv
+google-generativeai
+pandas
+requests

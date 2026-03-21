@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "CyberGuard AI",
+  "version": "1.0",
+  "description": "AI-Powered Phishing & Spam detection for Gmail.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "../static/icon.png"
+  },
+  "host_permissions": [
+    "https://your-app-name.onrender.com/*"
+  ],
+  "icons": {
+    "48": "../static/icon.png",
+    "128": "../static/icon.png"
+  }
+}
