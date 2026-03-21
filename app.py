@@ -12,18 +12,20 @@ from gmail_service import fetch_latest_emails
 load_dotenv()
 
 app = Flask(__name__)
-# Render will use the SECRET_KEY set in its environment variables
 app.secret_key = os.getenv("SECRET_KEY", "cyber_guard_secure_77")
 
-# Allow cookies to work across the domain (Lax is safer for Render)
+# --- FIX: PROD COOKIE SETTINGS ---
+# Render uses HTTPS. For the extension to stay logged in, we need SAMESITE="None"
 app.config.update(
-    SESSION_COOKIE_SAMESITE="Lax",
-    SESSION_COOKIE_SECURE=True if os.getenv("RENDER") else False,
+    SESSION_COOKIE_SAMESITE="None",
+    SESSION_COOKIE_SECURE=True, 
+    SESSION_COOKIE_HTTPONLY=True,
 )
 
+# Allow the extension to send the session cookie
 CORS(app, supports_credentials=True)
 
-# --- Google OAuth Configuration ---
+# --- Google OAuth ---
 oauth = OAuth(app)
 google = oauth.register(
     name='google',
@@ -66,6 +68,7 @@ def scan_inbox():
         emails = fetch_latest_emails(token)
         results = []
         for em in emails:
+            # The analyze_email function handles the model loading internally
             ml_res = analyze_email(em['snippet'])
             gpt_res = scan_with_gpt(em['snippet'], ml_res['phishing_score'])
             
@@ -80,6 +83,5 @@ def scan_inbox():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    # Render provides the PORT variable; default to 5000 for local
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
