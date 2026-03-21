@@ -3,42 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberGuard | AI Dashboard</title>
-    
+    <title>EmailGuard AI | Security Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">CyberGuard <span class="ai-tag">AI</span></div>
-        <div class="nav-actions">
-            <button id="refresh-btn" class="btn-primary">Refresh Analysis</button>
+        <div class="logo">EMAIL<span class="highlight">GUARD</span> AI</div>
+        <div class="nav-right">
+            <button id="refresh-btn" class="btn-primary">REFRESH ANALYSIS</button>
+            <a href="/logout" class="btn-logout">Logout</a>
         </div>
     </nav>
 
-    <div class="dashboard-container">
+    <div class="container">
         <div class="metrics-grid">
-            <div class="card chart-card">
-                <h3>Global Risk Level</h3>
-                <div class="chart-container">
-                    <canvas id="riskMeter"></canvas>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Overall Inbox Risk</h3>
+                    <span class="info-icon">i</span>
                 </div>
-                <div id="risk-label" class="risk-value">--</div>
+                <div class="chart-box">
+                    <canvas id="riskMeter"></canvas>
+                    <div id="risk-value" class="gauge-label">0%</div>
+                </div>
             </div>
 
-            <div class="card chart-card">
-                <h3>Inbox Composition</h3>
-                <div class="chart-container">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Threat Composition</h3>
+                </div>
+                <div class="chart-box">
                     <canvas id="compositionChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="card list-card">
-            <h3>Threat Analysis Log</h3>
-            <div id="email-list" class="email-items">
-                <p class="loading-text">Click Refresh to start scanning...</p>
+        <div class="card list-container">
+            <div class="card-header">
+                <h3>Threat Analysis Log</h3>
+                <div id="status-pill" class="pill">System Ready</div>
+            </div>
+            <div id="email-list" class="email-rows">
+                <p class="empty-state">No data analyzed yet. Click "Refresh Analysis" to start.</p>
             </div>
         </div>
     </div>
