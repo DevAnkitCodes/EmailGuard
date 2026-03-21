@@ -1,102 +1,83 @@
-let riskChart, compositionChart;
+let riskMeterChart, compositionChart;
 
-async function updateDashboard() {
-    const listContainer = document.getElementById('email-list');
-    const statusPill = document.getElementById('status-pill');
-    
-    statusPill.innerText = "Scanning...";
-    listContainer.innerHTML = '<p style="text-align:center; padding:20px;">Analyzing Inbox with AI...</p>';
+async function runAnalysis() {
+    const list = document.getElementById('email-list');
+    const badge = document.getElementById('scan-count');
+    list.innerHTML = '<p style="text-align:center; color: #94a3b8;">Scanning inbox for phishing threats...</p>';
 
     try {
         const response = await fetch('/scan-inbox');
         const data = await response.json();
 
         if (data.error) {
-            listContainer.innerHTML = `<p style="color:var(--danger)">Error: ${data.error}. Please log in.</p>`;
-            statusPill.innerText = "Error";
+            list.innerHTML = `<p style="color:#ef4444">Error: ${data.error}</p>`;
             return;
         }
 
+        badge.innerText = `${data.length} Scanned`;
         renderCharts(data);
         renderList(data);
-        statusPill.innerText = "Analysis Complete";
-
     } catch (err) {
-        console.error("Dashboard Update Failed:", err);
-        statusPill.innerText = "Server Unreachable";
+        console.error("Scan failed:", err);
     }
 }
 
 function renderCharts(data) {
-    const avgRisk = data.length > 0 ? (data.reduce((sum, e) => sum + e.score, 0) / data.length) * 100 : 0;
-    const phishingCount = data.filter(e => e.status === 'phishing').length;
+    const avgRisk = data.length > 0 ? (data.reduce((s, e) => s + e.score, 0) / data.length) * 100 : 0;
     const safeCount = data.filter(e => e.status === 'safe').length;
+    const threatCount = data.filter(e => e.status !== 'safe').length;
 
-    // Update Text Label
-    document.getElementById('risk-value').innerText = `${Math.round(avgRisk)}%`;
+    document.getElementById('risk-display').innerText = `${Math.round(avgRisk)}%`;
 
-    // 1. Risk Meter (Gauge)
+    // 1. Gauge Chart
     const ctx1 = document.getElementById('riskMeter').getContext('2d');
-    if (riskChart) riskChart.destroy();
-    riskChart = new Chart(ctx1, {
+    if (riskMeterChart) riskMeterChart.destroy();
+    riskMeterChart = new Chart(ctx1, {
         type: 'doughnut',
         data: {
             datasets: [{
                 data: [avgRisk, 100 - avgRisk],
-                backgroundColor: [avgRisk > 50 ? '#f85149' : '#58a6ff', '#21262d'],
-                borderWidth: 0,
-                circumference: 180,
-                rotation: 270,
-                cutout: '85%'
+                backgroundColor: [avgRisk > 50 ? '#ef4444' : '#3b82f6', '#1e293b'],
+                borderWidth: 0, circumference: 180, rotation: 270, cutout: '85%'
             }]
         },
         options: { plugins: { tooltip: { enabled: false } }, maintainAspectRatio: false }
     });
 
-    // 2. Composition Chart (Pie)
+    // 2. Pie Chart
     const ctx2 = document.getElementById('compositionChart').getContext('2d');
     if (compositionChart) compositionChart.destroy();
     compositionChart = new Chart(ctx2, {
         type: 'pie',
         data: {
-            labels: ['Safe', 'Phishing'],
+            labels: ['Safe', 'Threats'],
             datasets: [{
-                data: [safeCount, phishingCount],
-                backgroundColor: ['#3fb950', '#f85149'],
-                borderColor: '#161b22',
-                borderWidth: 2
+                data: [safeCount, threatCount],
+                backgroundColor: ['#10b981', '#ef4444'],
+                borderWidth: 0
             }]
         },
         options: { 
-            plugins: { 
-                legend: { position: 'bottom', labels: { color: '#c9d1d9', padding: 20 } } 
-            },
-            maintainAspectRatio: false 
+            plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 12 } } } },
+            maintainAspectRatio: false
         }
     });
 }
 
 function renderList(data) {
-    const listContainer = document.getElementById('email-list');
-    if (data.length === 0) {
-        listContainer.innerHTML = '<p>No emails found.</p>';
-        return;
-    }
-
-    listContainer.innerHTML = data.map(email => `
-        <div class="email-item" style="border-left-color: ${email.status === 'safe' ? '#3fb950' : '#f85149'}">
+    const list = document.getElementById('email-list');
+    list.innerHTML = data.map(email => `
+        <div class="email-row" style="border-left-color: ${email.status === 'safe' ? '#10b981' : '#ef4444'}">
             <div class="email-info">
-                <div style="font-weight:600; color:white">${email.subject}</div>
-                <div style="font-size:0.8rem; color:#8b949e">${email.explanation}</div>
+                <h4>${email.subject}</h4>
+                <p>${email.explanation}</p>
             </div>
-            <div class="email-meta" style="text-align:right">
-                <div style="font-weight:bold; color:${email.status === 'safe' ? '#3fb950' : '#f85149'}">
-                    ${Math.round(email.score * 100)}% Risk
-                </div>
+            <div class="score-badge ${email.status === 'safe' ? 'safe' : 'threat'}">
+                ${Math.round(email.score * 100)}%
             </div>
         </div>
     `).join('');
 }
 
-document.getElementById('refresh-btn').addEventListener('click', updateDashboard);
-window.onload = updateDashboard;
+document.getElementById('refresh-btn').addEventListener('click', runAnalysis);
+window.onload = runAnalysis;
