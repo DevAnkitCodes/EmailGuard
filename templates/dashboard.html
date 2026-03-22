@@ -2,58 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CyberGuard AI | Security Hub</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="logo">CYBER<span>GUARD</span></div>
-        <button id="refresh-btn" class="btn-primary">REFRESH INBOX SCAN</button>
-    </nav>
+<body class="bg-slate-950 text-white p-6">
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <h1 class="text-2xl font-bold text-blue-500">🛡️ CyberGuard Dashboard</h1>
+            <a href="{{ url_for('login') }}" class="text-slate-400 hover:text-white">Logout</a>
+        </header>
 
-    <div class="container">
-        <div id="deep-dive-card" class="card highlight-card" style="display:none;">
-            <div class="card-header">
-                <h3>Detailed AI Investigation</h3>
-                <button onclick="this.parentElement.parentElement.style.display='none'">Close</button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                <h3 class="text-slate-400 uppercase text-xs font-bold tracking-widest mb-4">Global Risk Score</h3>
+                <div class="text-5xl font-black text-white" id="risk-text">--%</div>
+                <p class="text-sm text-slate-500 mt-2">Average inbox threat level</p>
             </div>
-            <div class="dive-content">
-                <h2 id="dive-subject">--</h2>
-                <div class="dive-grid">
-                    <div class="dive-score-circle">
-                        <span id="dive-score">0%</span>
-                        <p id="dive-verdict">SECURE</p>
-                    </div>
-                    <div class="dive-text">
-                        <p><strong>AI Explanation:</strong></p>
-                        <p id="dive-explanation">Analyzing content...</p>
-                    </div>
+
+            <div class="md:col-span-2 bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                <h3 class="text-slate-400 uppercase text-xs font-bold tracking-widest mb-4">Recent Scans</h3>
+                <div id="email-list" class="space-y-3">
+                    <p class="text-slate-600 italic">Loading your email security history...</p>
                 </div>
             </div>
         </div>
 
-        <div class="metrics-grid">
-            <div class="card">
-                <h3>Global Risk Level</h3>
-                <div class="chart-wrapper">
-                    <canvas id="riskMeter"></canvas>
-                    <div id="risk-text">0%</div>
-                </div>
+        <div id="deep-dive-card" class="mt-10 bg-blue-900/20 border border-blue-500/30 p-8 rounded-3xl hidden">
+            <h2 class="text-xl font-bold mb-2">Detailed Analysis</h2>
+            <div id="dive-subject" class="text-blue-400 font-bold mb-4">Subject</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="text-6xl font-black" id="dive-score">0%</div>
+                <div id="dive-explanation" class="text-slate-300 leading-relaxed text-sm">Waiting for AI results...</div>
             </div>
-            <div class="card">
-                <h3>Inbox Health</h3>
-                <div class="chart-wrapper">
-                    <canvas id="compChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Threat Analysis Log</h3>
-            <div id="email-list" class="list-wrapper"></div>
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 </body>
 </html>
