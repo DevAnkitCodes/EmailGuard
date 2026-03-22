@@ -1,25 +1,22 @@
-# utils.py
 import joblib
 import os
+import numpy as np
 
-# Get the path to the model file inside the ml/ folder
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, 'ml', 'phishing_model.pkl')
+def load_model():
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(base_path, 'ml', 'phishing_model.pkl')
+    try:
+        if os.path.exists(model_path):
+            return joblib.load(model_path)
+        return None
+    except Exception as e:
+        print(f"Model Load Error: {e}")
+        return None
 
-# Load model once when the app starts
-try:
-    model = joblib.load(MODEL_PATH)
-    print("SUCCESS: ML Model loaded.")
-except Exception as e:
-    print(f"ERROR: Could not load model: {e}")
-    model = None
-
-def analyze_email(text):
-    if model:
-        # This assumes your model expects a list/array of text
-        prediction = model.predict_proba([text])[0]
-        score = prediction[1] # Probability of being 'Phishing'
-    else:
-        score = 0.5 # Fallback if model fails
-        
-    return {"phishing_score": score}
+def analyze_email(text, model):
+    if model is None:
+        return {'phishing_score': 0.5} # Fallback if model fails
+    
+    # Replace this with your actual feature extraction logic
+    prediction = model.predict_proba([text])[0][1] 
+    return {'phishing_score': prediction}
