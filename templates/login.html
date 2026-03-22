@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyberGuard | Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="bg-slate-950 text-white flex items-center justify-center min-h-screen">
     <div class="bg-slate-900 p-10 rounded-3xl border border-slate-800 shadow-2xl text-center max-w-sm w-full">
@@ -13,7 +12,7 @@
         <h1 class="text-3xl font-black mb-2 text-blue-500">CyberGuard AI</h1>
         <p class="text-slate-400 text-sm mb-8">Advanced Phishing & Spam Protection</p>
         
-        <a href="{{ url_for('login') }}" class="flex items-center justify-center gap-3 bg-white text-black font-bold py-3 px-6 rounded-xl hover:bg-slate-200 transition-all w-full">
+        <a href="{{ url_for('dashboard') }}" class="flex items-center justify-center gap-3 bg-white text-black font-bold py-3 px-6 rounded-xl hover:bg-slate-200 transition-all w-full">
             <img src="https://www.google.com/favicon.ico" class="w-5" alt="G">
             Sign in with Google
         </a>
