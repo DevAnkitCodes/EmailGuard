@@ -1,7 +1,6 @@
 flask
 flask-cors
 authlib
-google-auth
 gunicorn
 scikit-learn==1.2.2
 python-dotenv
@@ -9,3 +8,4 @@ google-generativeai
 requests
 joblib
 openai
+numpy<2.0.0
