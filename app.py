@@ -4,7 +4,7 @@ from flask_cors import CORS
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 
-# Import your helper scripts
+# Import your custom modules
 from utils import analyze_email
 from gpt_service import scan_with_gpt
 from gmail_service import fetch_latest_emails
@@ -12,20 +12,16 @@ from gmail_service import fetch_latest_emails
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "cyber_guard_secure_77")
+app.secret_key = os.getenv("SECRET_KEY", "cyber_guard_77")
 
-# --- FIX: PROD COOKIE SETTINGS ---
-# Render uses HTTPS. For the extension to stay logged in, we need SAMESITE="None"
+# Required for Render/Chrome Extension Cookies
 app.config.update(
     SESSION_COOKIE_SAMESITE="None",
-    SESSION_COOKIE_SECURE=True, 
-    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SECURE=True,
 )
-
-# Allow the extension to send the session cookie
 CORS(app, supports_credentials=True)
 
-# --- Google OAuth ---
+# --- Google OAuth Setup ---
 oauth = OAuth(app)
 google = oauth.register(
     name='google',
@@ -44,7 +40,6 @@ def index():
 
 @app.route('/login')
 def login():
-    # Use _external=True to generate absolute URLs for Google
     redirect_uri = url_for('auth_callback', _external=True)
     return google.authorize_redirect(redirect_uri)
 
@@ -58,30 +53,42 @@ def auth_callback():
 def dashboard_view():
     return render_template('dashboard.html')
 
+# NEW: Route for the Extension "Analyze" Button
+@app.route('/analyze-single', methods=['POST'])
+def analyze_single():
+    data = request.json
+    content = data.get('content', '')
+    subject = data.get('subject', 'No Subject')
+    
+    # ML Analysis
+    ml_res = analyze_email(content)
+    # GPT Deep Dive
+    gpt_res = scan_with_gpt(content, ml_res['phishing_score'])
+    
+    return jsonify({
+        "subject": subject,
+        "score": round(float(ml_res['phishing_score']) * 100, 2),
+        "verdict": gpt_res['verdict'],
+        "explanation": gpt_res['explanation']
+    })
+
 @app.route('/scan-inbox')
 def scan_inbox():
     token = session.get('google_token')
-    if not token:
-        return jsonify({"error": "Unauthorized"}), 401
+    if not token: return jsonify({"error": "Unauthorized"}), 401
     
-    try:
-        emails = fetch_latest_emails(token)
-        results = []
-        for em in emails:
-            # The analyze_email function handles the model loading internally
-            ml_res = analyze_email(em['snippet'])
-            gpt_res = scan_with_gpt(em['snippet'], ml_res['phishing_score'])
-            
-            results.append({
-                "subject": str(em['subject'])[:50],
-                "score": round(float(ml_res['phishing_score']), 2),
-                "status": str(gpt_res['verdict']).lower(),
-                "explanation": str(gpt_res['explanation'])
-            })
-        return jsonify(results)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    emails = fetch_latest_emails(token)
+    results = []
+    for em in emails:
+        ml = analyze_email(em['snippet'])
+        gpt = scan_with_gpt(em['snippet'], ml['phishing_score'])
+        results.append({
+            "subject": em['subject'],
+            "score": round(float(ml['phishing_score']) * 100, 2),
+            "status": gpt['verdict'].lower(),
+            "explanation": gpt['explanation']
+        })
+    return jsonify(results)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
