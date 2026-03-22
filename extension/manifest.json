@@ -1,21 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "CyberGuard AI",
-  "version": "1.0",
-  "description": "AI-Powered Phishing & Spam detection for Gmail.",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "cookies"
+  "name": "EmailGuard AI",
+  "version": "1.2",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://emailguard-ai.onrender.com/*",
+    "https://mail.google.com/*"
   ],
   "action": {
     "default_popup": "popup.html"
   },
-  "host_permissions": [
-    "https://emailguard-ai.onrender.com/*"
-  ],
-  "icons": {
-    "48": "static/icon.png",
-    "128": "static/icon.png"
-  }
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"]
+    }
+  ]
 }
